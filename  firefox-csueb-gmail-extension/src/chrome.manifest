@@ -1,0 +1,8 @@
+content     csuebgmail    content/
+content     csuebgmail    content/ contentaccessible=yes
+overlay chrome://browser/content/browser.xul chrome://csuebgmail/content/browser.xul
+
+locale	csuebgmail	en-US	locale/en-US/
+
+skin	csuebgmail	classic/1.0	skin/
+style	chrome://global/content/customizeToolbar.xul	chrome://csuebgmail/skin/skin.css
