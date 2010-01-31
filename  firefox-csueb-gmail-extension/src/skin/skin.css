@@ -10,3 +10,28 @@
 .link-target-finder-selected {
 	outline: 2px solid red !important;
 }
+
+
+
+
+.tB .mA {
+font-size: 90%;
+}
+.tB .ms {
+/* current */
+background:none repeat scroll 0 0 #BFD7FF;
+border:1px solid #4C7CCF;
+color:#4C7CCF;
+}
+.tB .mu {
+/* active */
+background:none repeat scroll 0 0 #FFFFFF;
+border:1px solid #6694E3;
+color:#6694E3;
+}
+.tB .mt {
+/* inactive */
+background:none repeat scroll 0 0 #FFFFFF;
+border:1px solid #c0d7fd;
+color:#c0d7fd;
+}
