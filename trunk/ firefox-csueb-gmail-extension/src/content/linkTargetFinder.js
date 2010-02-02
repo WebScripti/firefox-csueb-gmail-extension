@@ -67,12 +67,12 @@ var linkTargetFinder = function () {
 			}, false);
 		},
 
-		run : function (cont_span) {
+		run : function (email) {
 			if (!canvas_frame)
 				canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
 			if (!top_div)
 				top_div = canvas_frame.getElementsByClassName("tq")[0];
-			var email = cont_span.getAttribute('email');
+			//var email = cont_span.getAttribute('email');
 			if (!container_td)
 				container_td = canvas_frame.getElementsByClassName("tB")[0].parentNode;
 			
@@ -86,14 +86,21 @@ var linkTargetFinder = function () {
 			if (!registered) {
 				top_div.addEventListener("mouseover", linkTargetFinder.clearTriggerRemover, false);
 				top_div.addEventListener("mouseout", linkTargetFinder.triggerRemover, false);
-				top_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
-				top_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
+				//top_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
+				/*top_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
 				top_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
 				top_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
 				top_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
-				top_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);
+				top_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);*/
 				
-				
+				var cont_div = canvas_frame.getElementsByClassName("tB")[0];
+				cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
+				/*cont_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
+				cont_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
+				cont_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
+				cont_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
+				cont_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
+				cont_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);*/
 				
 				
 				registered = true;
@@ -219,10 +226,24 @@ var linkTargetFinder = function () {
 		
 		},
 		
+		treeModified : function () {
+			if (this){
+				debug("started");
+				debug(this.innerHTML.replace(/<(?:.|\s)*?>/g, ""));
+				linkTargetFinder.run(this.innerHTML.replace(/<(?:.|\s)*?>/g, ""));
+			}
+			
+		},
+		
 		fireTool : function (obj) {
 			if (content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0]){
 				fire_tries = 0;
-				linkTargetFinder.run(obj);
+				//linkTargetFinder.run(obj);
+				
+				if (cont_div = content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0]){
+					cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
+					registered=true;
+				}
 			}
 			else {
 				if (fire_tries++ < 15)
@@ -246,6 +267,8 @@ var linkTargetFinder = function () {
 			//clearTimeout(popup_timer);
 			clearTimeout(keep_popup_timer);
 		},
+		
+		
 		
 		containerRemove : function () {
 			//var container_td = content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0].parentNode;
