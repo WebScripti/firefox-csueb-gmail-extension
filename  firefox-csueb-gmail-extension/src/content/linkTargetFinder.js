@@ -16,11 +16,59 @@ var linkTargetFinder = function () {
 	
 	var registered = false;
 	
+	var initial_start = false;
+	
 	return {
 		init : function () {
+			//alert("init ran");
+			initial_start = true;
+			gBrowser.addEventListener("load", linkTargetFinder.browserCheck, false);
+			
 			gBrowser.addEventListener("load", function () {
+				/*var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+				var enumerator = wm.getEnumerator("navigator:browser");
+				while(enumerator.hasMoreElements()) {
+					var win = enumerator.getNext();
+					debug("enumarator:"+win.content.document.title);
+					// win is [Object ChromeWindow] (just like window), do something with it
+				}	*/	
+				/*if (initial_start) {
+					var num = gBrowser.browsers.length;
+					for (var i = 0; i < num; i++) {
+					  var b = gBrowser.getBrowserAtIndex(i);
+					  try {
+						//debug(b.currentURI.spec); // dump URLs of all open tabs to console
+						debug("enumarator:"+fire_tries+":"+b.contentDocument.title);
+						fire_tries++;
+					  } catch(e) {
+						Components.utils.reportError(e);
+					  }
+					}
+					initial_start = false;
+				}*/
 				
-				
+				/*var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+				var enumerator = wm.getEnumerator("navigator:browser");
+				while(enumerator.hasMoreElements()) {
+					var win = enumerator.getNext();
+					var num = win.gBrowser.browsers.length;
+					for (var i = 0; i < num; i++) {
+					  var b = win.gBrowser.getBrowserAtIndex(i);
+					  try {
+						//debug(b.currentURI.spec); // dump URLs of all open tabs to console
+						debug("enumarator:"+b.content.document.title);
+					  } catch(e) {
+						Components.utils.reportError(e);
+					  }
+					}
+					// win is [Object ChromeWindow] (just like window), do something with it
+				}	
+						*/								
+				if (content.document.getElementById("canvas_frame")){										
+					canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
+					canvas_frame.body.addEventListener("DOMNodeInserted", linkTargetFinder.nodeInserted, false);
+				}
+				//debug("gbrowser:"+content.document.title);
 				if (content.document.getElementById("canvas_frame")){
 					if (!canvas_frame)
 						canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
@@ -33,7 +81,7 @@ var linkTargetFinder = function () {
 					link.setAttribute("href", "chrome://csuebgmail/skin/skin.css");
 					otherhead.appendChild(link);
 
-					var span_zF = canvas_frame.getElementsByClassName("zF");	
+					/*var span_zF = canvas_frame.getElementsByClassName("zF");	
 					var span_yP = canvas_frame.getElementsByClassName("yP");	
 					if (span_zF) {
 						for (i=0; i<span_zF.length; i++){
@@ -54,7 +102,7 @@ var linkTargetFinder = function () {
 							span_yP[i].addEventListener("mouseout", linkTargetFinder.nameMouseOut, false);
 							span_yP[i].addEventListener("mouseout", linkTargetFinder.triggerRemover, false);
 						}
-					}
+					}*/
 					
 					
 					
@@ -83,28 +131,28 @@ var linkTargetFinder = function () {
 			}
 
 			// Add listeners to remove content box
-			if (!registered) {
+			/*if (!registered) {
 				top_div.addEventListener("mouseover", linkTargetFinder.clearTriggerRemover, false);
 				top_div.addEventListener("mouseout", linkTargetFinder.triggerRemover, false);
 				//top_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
-				/*top_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
-				top_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
-				top_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
-				top_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
-				top_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);*/
+				//top_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
+//				top_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
+//				top_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
+//				top_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
+//				top_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);
 				
 				var cont_div = canvas_frame.getElementsByClassName("tB")[0];
 				cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
-				/*cont_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
-				cont_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
-				cont_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
-				cont_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
-				cont_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
-				cont_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);*/
+				//cont_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
+//				cont_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
+//				cont_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
+//				cont_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
+//				cont_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
+//				cont_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);
 				
 				
 				registered = true;
-			}
+			}*/
 			
 			
 
@@ -117,7 +165,7 @@ var linkTargetFinder = function () {
 			
 			if (email.indexOf('@csueastbay.edu') > 0) {
 				//last_email = email;
-		
+				debug("creating image...");
 				container_div = content.document.createElement('div');
 				container_div.setAttribute('id','cg_container_div');
 				container_div.setAttribute('class','tB');
@@ -226,6 +274,17 @@ var linkTargetFinder = function () {
 		
 		},
 		
+		nodeInserted : function () {
+			//debug("Node Insert");
+			if (cont_div = this.getElementsByClassName("tB")[0]){
+				//debug("got it");
+				cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
+				
+				//debug("Remove body listener");
+				this.removeEventListener('DOMNodeInserted',linkTargetFinder.nodeInserted,false);
+			}
+		},
+		
 		treeModified : function () {
 			if (this){
 				debug("started");
@@ -235,8 +294,26 @@ var linkTargetFinder = function () {
 			
 		},
 		
+		browserCheck : function () {
+			if (initial_start) {
+				var num = gBrowser.browsers.length;
+				for (var i = 0; i < num; i++) {
+				  var b = gBrowser.getBrowserAtIndex(i);
+				  try {
+					//debug(b.currentURI.spec); // dump URLs of all open tabs to console
+					debug("enumarator:"+fire_tries+":"+b.contentDocument.title);
+					fire_tries++;
+				  } catch(e) {
+					Components.utils.reportError(e);
+				  }
+				}
+				//initial_start = false;
+			}
+			
+		},
+		
 		fireTool : function (obj) {
-			if (content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0]){
+			/*if (content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0]){
 				fire_tries = 0;
 				//linkTargetFinder.run(obj);
 				
@@ -248,7 +325,7 @@ var linkTargetFinder = function () {
 			else {
 				if (fire_tries++ < 15)
 					setTimeout(linkTargetFinder.fireTool,50,obj);
-			}
+			}*/
 		},
 		
 		nameMouseOver : function () {
