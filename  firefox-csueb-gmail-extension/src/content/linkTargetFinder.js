@@ -20,58 +20,14 @@ var linkTargetFinder = function () {
 	
 	return {
 		init : function () {
-			//alert("init ran");
-			initial_start = true;
-			gBrowser.addEventListener("load", linkTargetFinder.browserCheck, false);
-			
+			//gBrowser.addEventListener("load", linkTargetFinder.browserCheck, false);
 			gBrowser.addEventListener("load", function () {
-				/*var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-				var enumerator = wm.getEnumerator("navigator:browser");
-				while(enumerator.hasMoreElements()) {
-					var win = enumerator.getNext();
-					debug("enumarator:"+win.content.document.title);
-					// win is [Object ChromeWindow] (just like window), do something with it
-				}	*/	
-				/*if (initial_start) {
-					var num = gBrowser.browsers.length;
-					for (var i = 0; i < num; i++) {
-					  var b = gBrowser.getBrowserAtIndex(i);
-					  try {
-						//debug(b.currentURI.spec); // dump URLs of all open tabs to console
-						debug("enumarator:"+fire_tries+":"+b.contentDocument.title);
-						fire_tries++;
-					  } catch(e) {
-						Components.utils.reportError(e);
-					  }
-					}
-					initial_start = false;
-				}*/
-				
-				/*var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-				var enumerator = wm.getEnumerator("navigator:browser");
-				while(enumerator.hasMoreElements()) {
-					var win = enumerator.getNext();
-					var num = win.gBrowser.browsers.length;
-					for (var i = 0; i < num; i++) {
-					  var b = win.gBrowser.getBrowserAtIndex(i);
-					  try {
-						//debug(b.currentURI.spec); // dump URLs of all open tabs to console
-						debug("enumarator:"+b.content.document.title);
-					  } catch(e) {
-						Components.utils.reportError(e);
-					  }
-					}
-					// win is [Object ChromeWindow] (just like window), do something with it
-				}	
-						*/								
-				if (content.document.getElementById("canvas_frame")){										
+														
+				if (content.window.location.toString().indexOf('https://mail.google.com/a/csueastbay.edu/') != -1 && content.document.getElementById("canvas_frame")){				
 					canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
-					canvas_frame.body.addEventListener("DOMNodeInserted", linkTargetFinder.nodeInserted, false);
-				}
-				//debug("gbrowser:"+content.document.title);
-				if (content.document.getElementById("canvas_frame")){
-					if (!canvas_frame)
-						canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
+					
+					canvas_frame.body.removeEventListener('DOMNodeInserted', linkTargetFinder.nodeInserted, false);
+					canvas_frame.body.addEventListener('DOMNodeInserted', linkTargetFinder.nodeInserted, false);
 					
 					// Assign my pretty stylesheet to main iframe
 					var otherhead = canvas_frame.getElementsByTagName("head")[0];
@@ -80,33 +36,6 @@ var linkTargetFinder = function () {
 					link.setAttribute("type", "text/css");
 					link.setAttribute("href", "chrome://csuebgmail/skin/skin.css");
 					otherhead.appendChild(link);
-
-					/*var span_zF = canvas_frame.getElementsByClassName("zF");	
-					var span_yP = canvas_frame.getElementsByClassName("yP");	
-					if (span_zF) {
-						for (i=0; i<span_zF.length; i++){
-							//span_zF[i].addEventListener("mouseover", function() {popup_timer = setTimeout(linkTargetFinder.fireTool,1004,this);}, false);
-							//span_zF[i].addEventListener("mouseout", function() {clearTimeout(popup_timer);}, false);
-							span_zF[i].addEventListener("mouseover", linkTargetFinder.nameMouseOver, false);
-							span_zF[i].addEventListener("mouseover", linkTargetFinder.clearTriggerRemover, false);
-							span_zF[i].addEventListener("mouseout", linkTargetFinder.nameMouseOut, false);
-							span_zF[i].addEventListener("mouseout", linkTargetFinder.triggerRemover, false);
-						}
-					}
-					if (span_yP) {
-						for (i=0; i<span_yP.length; i++){
-							//span_yP[i].addEventListener("mouseover", function() {popup_timer = setTimeout(linkTargetFinder.fireTool,1004,this);}, false);
-							//span_yP[i].addEventListener("mouseout", function() {clearTimeout(popup_timer);}, false);
-							span_yP[i].addEventListener("mouseover", linkTargetFinder.nameMouseOver, false);
-							span_yP[i].addEventListener("mouseover", linkTargetFinder.clearTriggerRemover, false);
-							span_yP[i].addEventListener("mouseout", linkTargetFinder.nameMouseOut, false);
-							span_yP[i].addEventListener("mouseout", linkTargetFinder.triggerRemover, false);
-						}
-					}*/
-					
-					
-					
-
 				}
 				else{
 					//setTimeout("linkTargetFinder.initialize()",4000);
@@ -116,46 +45,18 @@ var linkTargetFinder = function () {
 		},
 
 		run : function (email) {
-			if (!canvas_frame)
-				canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
-			if (!top_div)
-				top_div = canvas_frame.getElementsByClassName("tq")[0];
-			//var email = cont_span.getAttribute('email');
-			if (!container_td)
-				container_td = canvas_frame.getElementsByClassName("tB")[0].parentNode;
+			canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
+			top_div = canvas_frame.getElementsByClassName("tq")[0];
+			container_td = canvas_frame.getElementsByClassName("tB")[0].parentNode;
 			
 			// If container is already there, clean elements
-			if (container_div = canvas_frame.getElementById('cg_container_div')){
+			linkTargetFinder.removeContainer();
+			/*if (container_div = canvas_frame.getElementById('cg_container_div')){
 				container_div.parentNode.removeChild(container_div);
 				//last_email = "";
+				debug("removed");
 			}
-
-			// Add listeners to remove content box
-			/*if (!registered) {
-				top_div.addEventListener("mouseover", linkTargetFinder.clearTriggerRemover, false);
-				top_div.addEventListener("mouseout", linkTargetFinder.triggerRemover, false);
-				//top_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
-				//top_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
-//				top_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
-//				top_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
-//				top_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
-//				top_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);
-				
-				var cont_div = canvas_frame.getElementsByClassName("tB")[0];
-				cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
-				//cont_div.addEventListener("DOMSubtreeModified", function() {debug('DOMSubtreeModified')}, false);
-//				cont_div.addEventListener("DOMNodeInserted", function () {debug('DOMNodeInserted')}, false);
-//				cont_div.addEventListener("DOMNodeRemoved", function () {debug('DOMNodeRemoved')}, false);
-//				cont_div.addEventListener("DOMFocusIn", function () {debug('DOMFocusIn')}, false);
-//				cont_div.addEventListener("DOMFocusOut", function () {debug('DOMFocusOut')}, false);
-//				cont_div.addEventListener("DOMActivate", function () {debug('DOMActivate')}, false);
-				
-				
-				registered = true;
-			}*/
-			
-			
-
+*/
 			// If container is already there, clean elements
 			/*if (container_div && email != last_email) {
 				container_div.parentNode.removeChild(container_div);
@@ -164,11 +65,15 @@ var linkTargetFinder = function () {
 			
 			
 			if (email.indexOf('@csueastbay.edu') > 0) {
+				email = email.substr(0,email.indexOf('@csueastbay.edu'));
 				//last_email = email;
-				debug("creating image...");
+
+				linkTargetFinder.removeContainer();
+				
 				container_div = content.document.createElement('div');
 				container_div.setAttribute('id','cg_container_div');
 				container_div.setAttribute('class','tB');
+				
 				container_td.appendChild(container_div);// Starting loading image
 					
 				var loadingImage = content.document.createElement('img');
@@ -179,26 +84,32 @@ var linkTargetFinder = function () {
 				
 				var xhttp = new XMLHttpRequest();
 
-				xhttp.open("GET", "http://www-test.csueastbay.edu/wsapps/util/directory/query.php?email=" + email, true);
+				xhttp.open("GET", "http://adhayweb13.csueastbay.edu/wsapps/util/directory/query.php?email=" + email, true);
 				xhttp.onreadystatechange = function() {	
 					if (xhttp.readyState === 4) {  // Makes sure the document is ready to parse.
 						
 						if (xhttp.status === 200) {  // Makes sure it's found the file.					
 							var allText = xhttp.responseText;
 							allText = allText.replace(/^<\?xml\s+version\s*=\s*(["'])[^\1]+\1[^?]*\?>/, "");
-							container_div.removeChild(loadingImage);// Remove loading image
+							try {
+								container_div.removeChild(loadingImage);// Remove loading image
+							}
+							catch (err){
+								//debug("e 0:"+err);
+								//debug(err.description);
+							}
 							container_p = content.document.createElement('p');
 							
 							try {
 								xmlDoc = new XML(allText);
 							}
 							catch(err){
-								debug(err);
+								debug("e 1:"+err);
 								debug(err.description);
 								container_p.innerHTML += "&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;- Error -";
 							}
 									
-								
+							container_div.innerHTML = "";	
 							//var mytext = content.document.createTextNode("text");
 							if (xmlDoc && xmlDoc.status == 'ok'){
 								if (xmlDoc.results.*.length() == 1){
@@ -223,8 +134,6 @@ var linkTargetFinder = function () {
 									cg_lt.innerHTML = "&lt;";
 									
 									cg_nav_content = content.document.createElement('div');
-									//cg_nav_content.setAttribute('class','tB');
-									//cg_nav_content.innerHTML = 'Results: <span style="color: #0f3b86" id="cg_cur_res">1</span>';
 									linkTargetFinder.printResults(cg_nav_content,1);
 									
 									cg_gt_lt_cont.appendChild(cg_gt);
@@ -248,9 +157,6 @@ var linkTargetFinder = function () {
 										 </div>
 									 </div>*/
 									
-									
-									
-									
 								}
 							}
 							else if (xmlDoc && xmlDoc.status == 'fail') {
@@ -260,102 +166,33 @@ var linkTargetFinder = function () {
 							else {
 								debug("Damn! Something sucked!");
 							}
-
+							
+							
 							container_div.appendChild(container_p);
 						}
 					}
 				}
 				xhttp.send(null);
 			}
-			
-			
-			
-			
-		
+
 		},
 		
 		nodeInserted : function () {
-			//debug("Node Insert");
 			if (cont_div = this.getElementsByClassName("tB")[0]){
-				//debug("got it");
-				cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
-				
-				//debug("Remove body listener");
-				this.removeEventListener('DOMNodeInserted',linkTargetFinder.nodeInserted,false);
+				cont_div.addEventListener('DOMSubtreeModified', linkTargetFinder.treeModified, false);
+				this.removeEventListener('DOMNodeInserted', linkTargetFinder.nodeInserted, false);
 			}
 		},
 		
 		treeModified : function () {
-			if (this){
-				debug("started");
-				debug(this.innerHTML.replace(/<(?:.|\s)*?>/g, ""));
+			if (this)
 				linkTargetFinder.run(this.innerHTML.replace(/<(?:.|\s)*?>/g, ""));
-			}
-			
 		},
 		
-		browserCheck : function () {
-			if (initial_start) {
-				var num = gBrowser.browsers.length;
-				for (var i = 0; i < num; i++) {
-				  var b = gBrowser.getBrowserAtIndex(i);
-				  try {
-					//debug(b.currentURI.spec); // dump URLs of all open tabs to console
-					debug("enumarator:"+fire_tries+":"+b.contentDocument.title);
-					fire_tries++;
-				  } catch(e) {
-					Components.utils.reportError(e);
-				  }
-				}
-				//initial_start = false;
-			}
-			
-		},
-		
-		fireTool : function (obj) {
-			/*if (content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0]){
-				fire_tries = 0;
-				//linkTargetFinder.run(obj);
-				
-				if (cont_div = content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0]){
-					cont_div.addEventListener("DOMSubtreeModified", linkTargetFinder.treeModified, false);
-					registered=true;
-				}
-			}
-			else {
-				if (fire_tries++ < 15)
-					setTimeout(linkTargetFinder.fireTool,50,obj);
-			}*/
-		},
-		
-		nameMouseOver : function () {
-			show_popup_timer = setTimeout(linkTargetFinder.fireTool,1004,this);		
-		},
-		
-		nameMouseOut : function () {
-			clearTimeout(show_popup_timer);		
-		},
-		
-		triggerRemover : function () {
-			//popup_timer = setTimeout(linkTargetFinder.containerRemove,0);
-			keep_popup_timer = setTimeout(linkTargetFinder.containerRemove,200);
-		},
-		clearTriggerRemover : function () {
-			//clearTimeout(popup_timer);
-			clearTimeout(keep_popup_timer);
-		},
-		
-		
-		
-		containerRemove : function () {
-			//var container_td = content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tB")[0].parentNode;
-			//var container_div = content.document.getElementById("canvas_frame").contentDocument.getElementById('cg_container_div');
-			//var top_div = content.document.getElementById("canvas_frame").contentDocument.getElementsByClassName("tq")[0];
-			
-			if (container_div && container_div.parentNode==container_td){
-				container_td.removeChild(container_div);
-				//top_div.removeEventListener('mouseout',linkTargetFinder.triggerRemover,false);
-				//top_div.removeEventListener('mouseover',linkTargetFinder.clearTriggerRemover,false);
+		removeContainer : function () {
+			if (container_div = canvas_frame.getElementById('cg_container_div')){
+				container_div.parentNode.removeChild(container_div);
+				//last_email = "";
 			}
 		},
 		
@@ -366,7 +203,7 @@ var linkTargetFinder = function () {
 				resultContent += "Phone: " + phone.substring(0,3) + "-" + phone.substring(3,6) + "-" + phone.substring(6) + "<br/>";
 			}
 			if (result.cellular.length())
-				resultContent += result.cellular + "<br/>";
+				resultContent += "Cellular: " + result.cellular + "<br/>";
 			if (result.location.length())
 				resultContent += "Location: " + result.location + "<br/>";
 			if (result.title.length())
@@ -411,7 +248,6 @@ var linkTargetFinder = function () {
 		},
 		
 		changeResult : function () {
-			//var canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
 			var cur_res = Number(canvas_frame.getElementById("cg_cur_res").innerHTML);
 			var results_length = xmlDoc.results.*.length();
 			var target_res;
