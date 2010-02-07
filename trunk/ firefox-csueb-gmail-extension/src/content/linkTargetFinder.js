@@ -4,7 +4,7 @@ var linkTargetFinder = function () {
 	var keep_popup_timer;
 	
 	var fire_tries = 0;
-	//var last_email;
+	var cur_email;
 	var container_p;
 	var xmlDoc;
 	
@@ -22,7 +22,6 @@ var linkTargetFinder = function () {
 		init : function () {
 			//gBrowser.addEventListener("load", linkTargetFinder.browserCheck, false);
 			gBrowser.addEventListener("load", function () {
-														
 				if (content.window.location.toString().indexOf('https://mail.google.com/a/csueastbay.edu/') != -1 && content.document.getElementById("canvas_frame")){				
 					canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
 					
@@ -50,7 +49,7 @@ var linkTargetFinder = function () {
 			container_td = canvas_frame.getElementsByClassName("tB")[0].parentNode;
 			
 			// If container is already there, clean elements
-			linkTargetFinder.removeContainer();
+			linkTargetFinder.cleanContainer();
 			/*if (container_div = canvas_frame.getElementById('cg_container_div')){
 				container_div.parentNode.removeChild(container_div);
 				//last_email = "";
@@ -67,14 +66,15 @@ var linkTargetFinder = function () {
 			if (email.indexOf('@csueastbay.edu') > 0) {
 				email = email.substr(0,email.indexOf('@csueastbay.edu'));
 				//last_email = email;
-
-				linkTargetFinder.removeContainer();
 				
-				container_div = content.document.createElement('div');
-				container_div.setAttribute('id','cg_container_div');
-				container_div.setAttribute('class','tB');
-				
-				container_td.appendChild(container_div);// Starting loading image
+				if (container_div = canvas_frame.getElementById('cg_container_div'))
+					linkTargetFinder.cleanContainer();
+				else {
+					container_div = content.document.createElement('div');
+					container_div.setAttribute('id','cg_container_div');
+					container_div.setAttribute('class','tB');
+					container_td.appendChild(container_div);// Starting loading image
+				}
 					
 				var loadingImage = content.document.createElement('img');
 				loadingImage.setAttribute('src','chrome://csuebgmail/skin/ajax-loader.gif');
@@ -187,6 +187,11 @@ var linkTargetFinder = function () {
 		treeModified : function () {
 			if (this)
 				linkTargetFinder.run(this.innerHTML.replace(/<(?:.|\s)*?>/g, ""));
+		},
+		
+		cleanContainer : function () {
+			if (container_div = canvas_frame.getElementById('cg_container_div'))
+				container_div.innerHTML = "";
 		},
 		
 		removeContainer : function () {
