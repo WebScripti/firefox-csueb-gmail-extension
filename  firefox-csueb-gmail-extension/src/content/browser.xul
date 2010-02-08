@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://csuebgmail/skin/skin.css" type="text/css"?>
-<!DOCTYPE linktargetfinder SYSTEM "chrome://csuebgmail/locale/translations.dtd">
+<?xml-stylesheet href="chrome://campusemail/skin/skin.css" type="text/css"?>
+<!DOCTYPE campusemail SYSTEM "chrome://campusemail/locale/translations.dtd">
 <overlay id="sample" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-		<script src="linkTargetFinder.js" />
+		<script src="campusemail.js" />
 
 		<menupopup id="menu_ToolsPopup">
-			<menuitem label="&csuebgmail;" key="link-target-finder-run-key" oncommand="linkTargetFinder.run()"/>
+			<menuitem label="&campusemail;" key="link-target-finder-run-key" oncommand="campusEmail.run()"/>
 		</menupopup>
 
 		<keyset>
-			<key id="link-target-finder-run-key" modifiers="accel alt shift" key="L" oncommand="linkTargetFinder.run()"/>
+			<key id="link-target-finder-run-key" modifiers="accel alt shift" key="L" oncommand="campusEmail.run()"/>
 		</keyset>
 
 		<statusbar id="status-bar">
-			<statusbarpanel id="link-target-finder-status-bar-icon" class="statusbarpanel-iconic" src="chrome://csuebgmail/skin/status-bar.png" tooltiptext="&csuebgmail;" onclick="linkTargetFinder.run()" />
+			<statusbarpanel id="link-target-finder-status-bar-icon" class="statusbarpanel-iconic" src="chrome://campusemail/skin/status-bar.png" tooltiptext="&campusemail;" onclick="campusEmail.run()" />
 		</statusbar>
 
 		<toolbarpalette id="BrowserToolbarPalette">
-			<toolbarbutton id="link-target-finder-toolbar-button" label="Link Target Finder" tooltiptext="&csuebgmail;" oncommand="linkTargetFinder.run()"/>
+			<toolbarbutton id="link-target-finder-toolbar-button" label="Link Target Finder" tooltiptext="&campusemail;" oncommand="campusEmail.run()"/>
 		</toolbarpalette>
 </overlay>

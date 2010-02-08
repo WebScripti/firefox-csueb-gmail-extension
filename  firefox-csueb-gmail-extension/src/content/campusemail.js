@@ -1,10 +1,11 @@
-var linkTargetFinder = function () {
+var campusEmail = function () {
 	//var prefManager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 	var show_popup_timer;
 	var keep_popup_timer;
 	
 	var fire_tries = 0;
 	var cur_email;
+	var email;
 	var container_p;
 	var xmlDoc;
 	
@@ -20,55 +21,45 @@ var linkTargetFinder = function () {
 	
 	return {
 		init : function () {
-			//gBrowser.addEventListener("load", linkTargetFinder.browserCheck, false);
+			//gBrowser.addEventListener("load", campusEmail.browserCheck, false);
 			gBrowser.addEventListener("load", function () {
 				if (content.window.location.toString().indexOf('https://mail.google.com/a/csueastbay.edu/') != -1 && content.document.getElementById("canvas_frame")){				
 					canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
 					
-					canvas_frame.body.removeEventListener('DOMNodeInserted', linkTargetFinder.nodeInserted, false);
-					canvas_frame.body.addEventListener('DOMNodeInserted', linkTargetFinder.nodeInserted, false);
+					canvas_frame.body.removeEventListener('DOMNodeInserted', campusEmail.nodeInserted, false);
+					canvas_frame.body.addEventListener('DOMNodeInserted', campusEmail.nodeInserted, false);
 					
 					// Assign my pretty stylesheet to main iframe
 					var otherhead = canvas_frame.getElementsByTagName("head")[0];
 					var link = canvas_frame.createElement("link");
 					link.setAttribute("rel", "stylesheet");
 					link.setAttribute("type", "text/css");
-					link.setAttribute("href", "chrome://csuebgmail/skin/skin.css");
+					link.setAttribute("href", "chrome://campusemail/skin/skin.css");
 					otherhead.appendChild(link);
 				}
 				else{
-					//setTimeout("linkTargetFinder.initialize()",4000);
+					//setTimeout("campusEmail.initialize()",4000);
 				}
 
 			}, false);
 		},
 
-		run : function (email) {
+		run : function () {
 			canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
 			top_div = canvas_frame.getElementsByClassName("tq")[0];
 			container_td = canvas_frame.getElementsByClassName("tB")[0].parentNode;
 			
 			// If container is already there, clean elements
-			linkTargetFinder.cleanContainer();
-			/*if (container_div = canvas_frame.getElementById('cg_container_div')){
-				container_div.parentNode.removeChild(container_div);
-				//last_email = "";
-				debug("removed");
-			}
-*/
-			// If container is already there, clean elements
-			/*if (container_div && email != last_email) {
-				container_div.parentNode.removeChild(container_div);
-				last_email = "";
-			}*/
+			campusEmail.cleanContainer();
 			
-			
-			if (email.indexOf('@csueastbay.edu') > 0) {
-				email = email.substr(0,email.indexOf('@csueastbay.edu'));
+			if (email.indexOf('@csueastbay.edu') > 0 && email != cur_email) {
+				local_part = email.substr(0,email.indexOf('@csueastbay.edu'));
 				//last_email = email;
 				
-				if (container_div = canvas_frame.getElementById('cg_container_div'))
-					linkTargetFinder.cleanContainer();
+				if (canvas_frame.getElementById('cg_container_div')){
+					container_div = canvas_frame.getElementById('cg_container_div');
+					campusEmail.cleanContainer();
+				}
 				else {
 					container_div = content.document.createElement('div');
 					container_div.setAttribute('id','cg_container_div');
@@ -77,14 +68,14 @@ var linkTargetFinder = function () {
 				}
 					
 				var loadingImage = content.document.createElement('img');
-				loadingImage.setAttribute('src','chrome://csuebgmail/skin/ajax-loader.gif');
+				loadingImage.setAttribute('src','chrome://campusemail/skin/ajax-loader.gif');
 				loadingImage.setAttribute('name','cg_loading_img');
 				loadingImage.setAttribute('style','margin: 15px 0 10px 65px;');
 				container_div.appendChild(loadingImage);
 				
 				var xhttp = new XMLHttpRequest();
 
-				xhttp.open("GET", "http://adhayweb13.csueastbay.edu/wsapps/util/directory/query.php?email=" + email, true);
+				xhttp.open("GET", "http://adhayweb13.csueastbay.edu/wsapps/util/directory/query.php?email=" + local_part, true);
 				xhttp.onreadystatechange = function() {	
 					if (xhttp.readyState === 4) {  // Makes sure the document is ready to parse.
 						
@@ -113,7 +104,7 @@ var linkTargetFinder = function () {
 							//var mytext = content.document.createTextNode("text");
 							if (xmlDoc && xmlDoc.status == 'ok'){
 								if (xmlDoc.results.*.length() == 1){
-									container_p.innerHTML = linkTargetFinder.displayResult(xmlDoc.results.result);
+									container_p.innerHTML = campusEmail.displayResult(xmlDoc.results.result);
 								}
 								else {
 									var cg_nav = content.document.createElement('div');
@@ -125,16 +116,16 @@ var linkTargetFinder = function () {
 									
 									var cg_gt = content.document.createElement('div');
 									cg_gt.setAttribute('id','cg_gt');
-									linkTargetFinder.activateLink(cg_gt);
+									campusEmail.activateLink(cg_gt);
 									cg_gt.innerHTML = "&gt;";
 									
 									var cg_lt = content.document.createElement('div');
 									cg_lt.setAttribute('id','cg_lt');
-									linkTargetFinder.deactivateLink(cg_lt);
+									campusEmail.deactivateLink(cg_lt);
 									cg_lt.innerHTML = "&lt;";
 									
 									cg_nav_content = content.document.createElement('div');
-									linkTargetFinder.printResults(cg_nav_content,1);
+									campusEmail.printResults(cg_nav_content,1);
 									
 									cg_gt_lt_cont.appendChild(cg_gt);
 									cg_gt_lt_cont.appendChild(cg_lt);
@@ -142,7 +133,7 @@ var linkTargetFinder = function () {
 									cg_nav.appendChild(cg_nav_content);
 									container_div.appendChild(cg_nav);
 									
-									container_p.innerHTML = linkTargetFinder.displayResult(xmlDoc.results.result[0]);
+									container_p.innerHTML = campusEmail.displayResult(xmlDoc.results.result[0]);
 									/*<div class="tB" id="cg_nav">
 										<div class="mA">
 											<div class="ms" id="cg_gt" onmouseover="this.className = 'mu';" onmouseout="this.className = 'ms';">
@@ -179,19 +170,21 @@ var linkTargetFinder = function () {
 		
 		nodeInserted : function () {
 			if (cont_div = this.getElementsByClassName("tB")[0]){
-				cont_div.addEventListener('DOMSubtreeModified', linkTargetFinder.treeModified, false);
-				this.removeEventListener('DOMNodeInserted', linkTargetFinder.nodeInserted, false);
+				cont_div.addEventListener('DOMSubtreeModified', campusEmail.treeModified, false);
+				this.removeEventListener('DOMNodeInserted', campusEmail.nodeInserted, false);
 			}
 		},
 		
 		treeModified : function () {
-			if (this)
-				linkTargetFinder.run(this.innerHTML.replace(/<(?:.|\s)*?>/g, ""));
+			if (this) {
+				email = this.innerHTML.replace(/<(?:.|\s)*?>/g, "");
+				campusEmail.run();
+			}
 		},
 		
 		cleanContainer : function () {
-			if (container_div = canvas_frame.getElementById('cg_container_div'))
-				container_div.innerHTML = "";
+			if (canvas_frame.getElementById('cg_container_div') && email != cur_email)
+				canvas_frame.getElementById('cg_container_div').innerHTML = "";
 		},
 		
 		removeContainer : function () {
@@ -202,6 +195,7 @@ var linkTargetFinder = function () {
 		},
 		
 		displayResult : function (result) {
+			cur_email = email;
 			var resultContent = '';
 			if (result.phone.length()){
 				var phone = result.phone.toString();
@@ -229,16 +223,16 @@ var linkTargetFinder = function () {
 		
 		activateLink : function (cg_div) {
 			cg_div.setAttribute('class','ms');
-			cg_div.addEventListener('mouseover', linkTargetFinder.linkOver, false);
-			cg_div.addEventListener('mouseout', linkTargetFinder.linkOut, false);
-			cg_div.addEventListener('click', linkTargetFinder.changeResult, false);
+			cg_div.addEventListener('mouseover', campusEmail.linkOver, false);
+			cg_div.addEventListener('mouseout', campusEmail.linkOut, false);
+			cg_div.addEventListener('click', campusEmail.changeResult, false);
 		},
 		
 		deactivateLink : function (cg_div) {
 			cg_div.setAttribute('class','mt');
-			cg_div.removeEventListener('mouseover',linkTargetFinder.linkOver,false);
-			cg_div.removeEventListener('mouseout',linkTargetFinder.linkOut,false);
-			cg_div.removeEventListener('click',linkTargetFinder.changeResult,false);
+			cg_div.removeEventListener('mouseover',campusEmail.linkOver,false);
+			cg_div.removeEventListener('mouseout',campusEmail.linkOut,false);
+			cg_div.removeEventListener('click',campusEmail.changeResult,false);
 		},
 		
 		printResults : function (cg_div, cur_res) {
@@ -259,24 +253,24 @@ var linkTargetFinder = function () {
 			if (this.innerHTML == "&gt;"){
 				target_res = cur_res + 1;
 				if (cur_res == 1)
-					linkTargetFinder.activateLink(this.nextSibling); // Activate previous link
+					campusEmail.activateLink(this.nextSibling); // Activate previous link
 				if (target_res == results_length)
-					linkTargetFinder.deactivateLink(this); // Deactivate next link
+					campusEmail.deactivateLink(this); // Deactivate next link
 			}
 			else {
 				target_res = cur_res - 1;
 				if (cur_res == results_length)
-					linkTargetFinder.activateLink(this.previousSibling);
+					campusEmail.activateLink(this.previousSibling);
 				if (target_res == 1)
-					linkTargetFinder.deactivateLink(this);
+					campusEmail.deactivateLink(this);
 			}
-			container_p.innerHTML = linkTargetFinder.displayResult(xmlDoc.results.result[target_res-1]);
-			linkTargetFinder.printResults(cg_nav_content,target_res);
+			container_p.innerHTML = campusEmail.displayResult(xmlDoc.results.result[target_res-1]);
+			campusEmail.printResults(cg_nav_content,target_res);
 		},
 	
 	};
 }();
-window.addEventListener("load", linkTargetFinder.init, false);
+window.addEventListener("load", campusEmail.init, false);
 
 function debug(aMsg) {
 	setTimeout(function() { throw new Error("[debug] " + aMsg); }, 0);
