@@ -1,13 +1,13 @@
-#link-target-finder-toolbar-button {
-	list-style-image: url("chrome://csuebgmail/skin/toolbar-large.png");
+#campusemail-toolbar-button {
+	list-style-image: url("chrome://campusemail/skin/toolbar-large.png");
 }
 
-#link-target-finder-status-bar-icon {
+#campusemail-status-bar-icon {
 	width: 83px;
 	margin: 0 5px;
 }
 
-.link-target-finder-selected {
+.campusemail-selected {
 	outline: 2px solid red !important;
 }
 

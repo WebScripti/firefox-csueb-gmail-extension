@@ -3,14 +3,13 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
 	<Description about="urn:mozilla:install-manifest">
-		<em:id>cagdascubukcu@thenuca.com</em:id>
-		<em:name>CSUEB GMail Extension</em:name>
+		<em:id>campusemail@thenuca.com</em:id>
+		<em:name>Campus E-mail Addon</em:name>
 		<em:version>0.01</em:version>
 		<em:type>2</em:type>
 		<em:creator>Cagdas Cubukcu</em:creator>
-		<em:description>Adds directory finder on GMail for CSUEB contacts</em:description>
-		<em:homepageURL>http://www.csueastbay.edu/</em:homepageURL>
-		<em:optionsURL>chrome://csuebgmail/content/options.xul</em:optionsURL>
+		<em:description>Brings up contact information for @csueastbay.edu contacts in CSUEB Gmail</em:description>
+		<em:optionsURL>chrome://campusemail/content/options.xul</em:optionsURL>
 
 		<em:targetApplication>
 			<Description>
