@@ -5,9 +5,11 @@ var campusEmail = function () {
 	
 	var fire_tries = 0;
 	var cur_email;
+	var last_email;
 	var email;
 	var container_p;
 	var xmlDoc;
+	var xhttp;
 	
 	var canvas_frame;
 	var container_td;
@@ -50,15 +52,15 @@ var campusEmail = function () {
 			container_td = canvas_frame.getElementsByClassName("tB")[0].parentNode;
 			
 			// If container is already there, clean elements
-			campusEmail.cleanContainer();
+			campusEmail.powerCleanContainer();
 			
-			if (email.indexOf('@csueastbay.edu') > 0 && email != cur_email) {
+			//if (email != last_email) {
 				local_part = email.substr(0,email.indexOf('@csueastbay.edu'));
 				//last_email = email;
 				
 				if (canvas_frame.getElementById('cg_container_div')){
 					container_div = canvas_frame.getElementById('cg_container_div');
-					campusEmail.cleanContainer();
+					//campusEmail.cleanContainer();
 				}
 				else {
 					container_div = content.document.createElement('div');
@@ -73,13 +75,28 @@ var campusEmail = function () {
 				loadingImage.setAttribute('style','margin: 15px 0 10px 65px;');
 				container_div.appendChild(loadingImage);
 				
-				var xhttp = new XMLHttpRequest();
-
+				//xhttp = new XMLHttpRequest();
+				
+				if (!xhttp)
+					xhttp = new XMLHttpRequest();
+				else if (xhttp.readyState != 0){
+					debug('cancel request');
+					xhttp.abort();
+				}
+				
+				
+				//debug(email);debug('connect');
 				xhttp.open("GET", "http://adhayweb13.csueastbay.edu/wsapps/util/directory/query.php?email=" + local_part, true);
+				
 				xhttp.onreadystatechange = function() {	
 					if (xhttp.readyState === 4) {  // Makes sure the document is ready to parse.
+						canvas_frame = content.document.getElementById("canvas_frame").contentDocument;
+						if (canvas_frame) {
+							top_div = canvas_frame.getElementsByClassName("tq")[0];
+							cont_div = canvas_frame.getElementsByClassName("tB")[0];
+						}
 						
-						if (xhttp.status === 200) {  // Makes sure it's found the file.					
+						if (xhttp.status === 200 && top_div && cont_div) {  // Makes sure it's found the file.		
 							var allText = xhttp.responseText;
 							allText = allText.replace(/^<\?xml\s+version\s*=\s*(["'])[^\1]+\1[^?]*\?>/, "");
 							try {
@@ -95,12 +112,14 @@ var campusEmail = function () {
 								xmlDoc = new XML(allText);
 							}
 							catch(err){
-								debug("e 1:"+err);
-								debug(err.description);
+								//debug("e 1:"+err);
+								//debug(err.description);
 								container_p.innerHTML += "&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;- Error -";
 							}
+							//debug('got response');
+							//debug('here:'+xmlDoc.query);
 									
-							container_div.innerHTML = "";	
+							//campusEmail.cleanContainer();
 							//var mytext = content.document.createTextNode("text");
 							if (xmlDoc && xmlDoc.status == 'ok'){
 								if (xmlDoc.results.*.length() == 1){
@@ -131,7 +150,7 @@ var campusEmail = function () {
 									cg_gt_lt_cont.appendChild(cg_lt);
 									cg_nav.appendChild(cg_gt_lt_cont);
 									cg_nav.appendChild(cg_nav_content);
-									container_div.appendChild(cg_nav);
+									
 									
 									container_p.innerHTML = campusEmail.displayResult(xmlDoc.results.result[0]);
 									/*<div class="tB" id="cg_nav">
@@ -149,27 +168,52 @@ var campusEmail = function () {
 									 </div>*/
 									
 								}
-							}
+							}// end if xmlDoc && xmlDoc.status == 'ok'
 							else if (xmlDoc && xmlDoc.status == 'fail') {
 								if (xmlDoc.error.code == '2')
 									container_p.innerHTML += "&#160;&#160;&#160;&#160;&#160;- No result found -";
 							}
 							else {
-								debug("Damn! Something sucked!");
+								//debug("Damn! Something sucked!");
 							}
-							
-							
-							container_div.appendChild(container_p);
+												
+						}// end if xhttp.status === 200
+						else {
+							//container_p.innerHTML += "&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;- Error -";
 						}
-					}
-				}
+						//debug('finally');
+						try {
+							if (cont_div) {
+								 cur_email = cont_div.innerHTML.replace(/<(?:.|\s)*?>/g, "");
+								 if (cur_email.indexOf(xmlDoc.query) > -1) {
+									//debug('inside');
+									campusEmail.powerCleanContainer();
+									if (cg_nav)
+										container_div.appendChild(cg_nav);
+									container_div.appendChild(container_p);
+									last_email = cur_email;
+									//cur_email = email;
+								}
+							}
+						}
+						catch (err){
+								debug("e 3:"+err);
+								debug(err.description);
+						}
+						
+					}// end if xhttp.readyState === 4
+				}// end xhttp.function
 				xhttp.send(null);
-			}
+			/*}// end if cont_div.innerHTML.replace(/<(?:.|\s)*?>/g, "") != email
+			else {
+				//cur_email = email;
+			}*/
 
 		},
 		
 		nodeInserted : function () {
-			if (cont_div = this.getElementsByClassName("tB")[0]){
+			if (this.getElementsByClassName("tB")[0]){
+				cont_div = this.getElementsByClassName("tB")[0];
 				cont_div.addEventListener('DOMSubtreeModified', campusEmail.treeModified, false);
 				this.removeEventListener('DOMNodeInserted', campusEmail.nodeInserted, false);
 			}
@@ -177,8 +221,21 @@ var campusEmail = function () {
 		
 		treeModified : function () {
 			if (this) {
+				debug('new call');
 				email = this.innerHTML.replace(/<(?:.|\s)*?>/g, "");
-				campusEmail.run();
+				if (xhttp)
+					debug('HTTP:'+xhttp.readyState);
+				else
+				debug('no HTTP');
+				if (email == last_email && xhttp.readyState!=1 && xhttp.readyState!=2 && xhttp.readyState!=3) {
+				}
+				else if (email.indexOf('@csueastbay.edu') > 0)
+					campusEmail.run();
+				else {	
+					campusEmail.powerCleanContainer();
+					last_email = '';
+					//cur_email = email;
+				}
 			}
 		},
 		
@@ -187,15 +244,22 @@ var campusEmail = function () {
 				canvas_frame.getElementById('cg_container_div').innerHTML = "";
 		},
 		
-		removeContainer : function () {
+		powerCleanContainer : function () {
+			if (canvas_frame.getElementById('cg_container_div'))
+				canvas_frame.getElementById('cg_container_div').innerHTML = "";
+				
+			//last_email = '';
+		},
+		
+		/*removeContainer : function () {
 			if (container_div = canvas_frame.getElementById('cg_container_div')){
 				container_div.parentNode.removeChild(container_div);
 				//last_email = "";
 			}
-		},
+		},*/
 		
 		displayResult : function (result) {
-			cur_email = email;
+			//cur_email = email;
 			var resultContent = '';
 			if (result.phone.length()){
 				var phone = result.phone.toString();
