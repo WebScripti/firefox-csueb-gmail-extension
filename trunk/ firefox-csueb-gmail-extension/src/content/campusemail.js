@@ -38,6 +38,8 @@ var campusEmail = function () {
 					link.setAttribute("type", "text/css");
 					link.setAttribute("href", "chrome://campusemail/skin/skin.css");
 					otherhead.appendChild(link);
+					
+					xhttp = new XMLHttpRequest();
 				}
 				else{
 					//setTimeout("campusEmail.initialize()",4000);
@@ -79,11 +81,11 @@ var campusEmail = function () {
 				
 				if (!xhttp)
 					xhttp = new XMLHttpRequest();
-				else if (xhttp.readyState != 0){
-					debug('cancel request');
+/*				else if (xhttp.readyState != 0 && xhttp.readyState != 4){
+					//debug('cancel request');
 					xhttp.abort();
 				}
-				
+*/				
 				
 				//debug(email);debug('connect');
 				xhttp.open("GET", "http://adhayweb13.csueastbay.edu/wsapps/util/directory/query.php?email=" + local_part, true);
@@ -197,8 +199,8 @@ var campusEmail = function () {
 							}
 						}
 						catch (err){
-								debug("e 3:"+err);
-								debug(err.description);
+								//debug("e 3:"+err);
+								//debug(err.description);
 						}
 						
 					}// end if xhttp.readyState === 4
@@ -221,16 +223,22 @@ var campusEmail = function () {
 		
 		treeModified : function () {
 			if (this) {
-				debug('new call');
+				//debug('new call');
 				email = this.innerHTML.replace(/<(?:.|\s)*?>/g, "");
-				if (xhttp)
+				/*if (xhttp)
 					debug('HTTP:'+xhttp.readyState);
 				else
-				debug('no HTTP');
-				if (email == last_email && xhttp.readyState!=1 && xhttp.readyState!=2 && xhttp.readyState!=3) {
+					debug('no HTTP');*/
+					
+				
+				if (email == last_email && (xhttp.readyState==0 || xhttp.readyState==4)) {
 				}
-				else if (email.indexOf('@csueastbay.edu') > 0)
+				else if (email.indexOf('@csueastbay.edu') > 0){
+					if (xhttp.readyState==1 || xhttp.readyState==2 || xhttp.readyState==3)
+						xhttp.abort();
+						
 					campusEmail.run();
+				}
 				else {	
 					campusEmail.powerCleanContainer();
 					last_email = '';
