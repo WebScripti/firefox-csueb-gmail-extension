@@ -9,7 +9,6 @@
 		<em:type>2</em:type>
 		<em:creator>Cagdas Cubukcu</em:creator>
 		<em:description>Brings up contact information for @csueastbay.edu contacts in CSUEB Gmail</em:description>
-		<em:optionsURL>chrome://campusemail/content/options.xul</em:optionsURL>
 
 		<em:targetApplication>
 			<Description>

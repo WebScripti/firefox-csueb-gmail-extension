@@ -1,1 +1,0 @@
-pref("extensions.campusemail.autorun", false);

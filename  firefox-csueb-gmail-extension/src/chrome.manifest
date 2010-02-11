@@ -2,7 +2,7 @@ content     campusemail    content/
 content     campusemail    content/ contentaccessible=yes
 overlay chrome://browser/content/browser.xul chrome://campusemail/content/browser.xul
 
-locale	campusemail	en-US	locale/en-US/
+locale campusemail en-US locale/en-US/
 
 skin	campusemail	classic/1.0	skin/
 style	chrome://global/content/customizeToolbar.xul	chrome://campusemail/skin/skin.css
