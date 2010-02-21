@@ -204,7 +204,7 @@ var campusEmail = function () {
 						}
 						
 					}// end if xhttp.readyState === 4
-				}// end xhttp.function
+				};// end xhttp.function
 				xhttp.send(null);
 			/*}// end if cont_div.innerHTML.replace(/<(?:.|\s)*?>/g, "") != email
 			else {
@@ -258,13 +258,6 @@ var campusEmail = function () {
 				
 			//last_email = '';
 		},
-		
-		/*removeContainer : function () {
-			if (container_div = canvas_frame.getElementById('cg_container_div')){
-				container_div.parentNode.removeChild(container_div);
-				//last_email = "";
-			}
-		},*/
 		
 		displayResult : function (result) {
 			//cur_email = email;
