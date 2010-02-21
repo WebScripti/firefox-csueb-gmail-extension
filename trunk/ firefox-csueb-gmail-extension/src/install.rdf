@@ -9,6 +9,7 @@
 		<em:type>2</em:type>
 		<em:creator>Cagdas Cubukcu</em:creator>
 		<em:description>Brings up contact information for @csueastbay.edu contacts on CSUEB Gmail</em:description>
+		<em:updateURL>https://adhayweb13.csueastbay.edu/wsapps/util/campusemail/update.xml</em:updateURL>
 
 		<em:targetApplication>
 			<Description>
