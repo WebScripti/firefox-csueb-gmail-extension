@@ -9,7 +9,9 @@
 		<em:type>2</em:type>
 		<em:creator>Cagdas Cubukcu</em:creator>
 		<em:description>Brings up contact information for @csueastbay.edu contacts on CSUEB Gmail</em:description>
-		<em:updateURL>https://adhayweb13.csueastbay.edu/wsapps/util/campusemail/update.xml</em:updateURL>
+		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTAiRDILfNo5TYD9IxA9D04W8gxCeFeU16P6cNkeQd2CmlBx5pc/qoyhGRGXEWzVwowka1dJPMyCBTdxiHvW1BNUHHmZflplbVwEFq/AYZOOiScS2bd779XHCpHl38WS4rA1Ubkdhehdd0vrXjAqeE2VL0/QZpGtsGeiFh0ZkaxQIDAQAB</em:updateKey>
+		<em:iconURL>chrome://campusemail/skin/icon.png</em:iconURL>
+		<em:updateURL>http://thenuca.com/devel/extensions/campusemail/update.rdf</em:updateURL>
 
 		<em:targetApplication>
 			<Description>
