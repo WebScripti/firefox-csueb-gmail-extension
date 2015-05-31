@@ -1,0 +1,1 @@
+This project is to prepare a Firefox extension to be used in CSUEB apps.
